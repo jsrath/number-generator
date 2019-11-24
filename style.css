@@ -1,20 +1,52 @@
-@keyframes shuffle {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(0, -70rem, 0);
-  }
-}
-
 body {
   display: flex;
   color: #fff;
-  background: MediumAquaMarine;
+  background: #4db6ac;
   display: flex;
   place-content: center;
   place-items: center;
   flex-direction: column;
+  font-family: 'Tomorrow', sans-serif;
+  font-weight: 300;
+}
+
+h1 {
+  font-weight: 400;
+  font-size: 2.4rem;
+  margin: 15px 0;
+}
+
+p {
+  font-size: 1.2rem;
+  margin: 30px 0 5px;
+}
+
+input[type="number"], .copy-button {
+  background-color: #f3f3f3;
+  color: #333;
+  width: 100px;
+  border: 0;
+  padding: 5px 0;
+  border-radius: 5px;
+  text-align: center;
+}
+
+input[type="number"] {
+  font-size: 1.4rem;
+}
+
+.copy-button {
+  font-size: 1.4rem;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.copy-button:focus {
+  outline: none;
+}
+
+.copy-button:active {
+  transform: scaleX(0.95) translateY(2px);
 }
 
 .container {
@@ -34,15 +66,13 @@ body {
   text-align: center;
   color: #fff;
   text-shadow: -2px -2px 0 #aaa;
-  font: 5rem/1.4 monaco, monospace;
+  font: 5rem/1.4 'Roboto Mono', monospace;
   padding: 0 10px;
 }
 
 .board {
   flex-grow: 1;
   margin: 0 5px;
-  animation: shuffle 1.1s steps(10) infinite;
-  animation-play-state: paused;
 }
 
 .hide {
@@ -50,7 +80,7 @@ body {
 }
 
 label {
-  margin: 50px auto;
+  margin: 10px auto 50px;
   display: block;
   position: relative;
   cursor: pointer;
@@ -79,16 +109,17 @@ label:after {
   transition: background 0.4s, left 0.4s, height 0.2s, width 0.2s;
 }
 
-input:checked+label {
+input:checked + label {
   box-shadow: inset 0 0 0 48px tint(#333, 50%);
 }
 
-label:active:after, input:checked+label:active:after {
+label:active:after,
+input:checked + label:active:after {
   height: 45px;
   width: 45px;
 }
 
-input:checked+label:after {
+input:checked + label:after {
   left: calc(100% - 50px);
   background: #333;
 }

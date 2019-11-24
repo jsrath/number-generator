@@ -1,41 +1,58 @@
-let run = true;
-const initalFlipNumberSize = 3;
+const config = {
+  initialFlipNumbers: 3,
+  minimumFlipNumbers: 1,
+  maximumFlipNumbers: 10,
+};
+
+let run = false;
 const digitInput = document.querySelector('.digit-input');
-
-
-function getRandom() {
-  return Math.random() + 1;
-}
 
 function toggleRotation() {
   run = !run;
-  const animationState = run ? 'paused' : 'running';
-  document.querySelectorAll('.board').forEach(item => {
-    const duration = getRandom();
-    const style = item.style;
-    style.animationPlayState = animationState;
-    style.animationDuration = `${duration}s`;
+  const board = document.querySelectorAll('.board');
+  board.forEach(flipNumber => {
+    const rotateNumbers = setInterval(() => {
+      if (!run) {
+        clearInterval(rotateNumbers);
+      }
+      return (flipNumber.innerHTML = Math.floor(Math.random() * 10));
+    }, 100);
   });
 }
 
+function addOrRemoveNumbers(difference) {
+  const sign = Math.sign(difference);
+  switch (sign) {
+    case 1:
+      addFlipNumbersToBoard(difference);
+      break;
 
-async function setBoardSize(digits) {
-  if (digits < 1 || digits > 10) {
-    return alert("Choose a number between 1 and 10");
+    case -1:
+      removeFlipNumbersFromBoard(difference);
+      break;
+
+    default:
+      return;
   }
-  await checkWrapper();
+}
+
+function setBoardSize(inputNumber) {
+  const isInputValid = validateInput(inputNumber);
+
+  if (!isInputValid) {
+    return alert(`Please enter a number between ${config.minimumFlipNumbers} and ${config.maximumFlipNumbers}!`);
+  }
+  checkWrapper();
   const wrapper = document.querySelector('.wrapper');
-  const numberOfFlipNumbers = wrapper.querySelectorAll('.board').length;
-  const difference = digits - numberOfFlipNumbers;
-  const value = Math.sign(difference);
+  const difference = inputNumber - wrapper.querySelectorAll('.board').length;
+  addOrRemoveNumbers(difference)
+}
 
-  if (value === 1) {
-    addFlipNumbersToBoard(difference);
-  } else if (value === 0) {
-    return;
-  } else {
-    removeFlipNumbersFromBoard(difference);
+function validateInput(input) {
+  if (input < config.minimumFlipNumbers || input > config.maximumFlipNumbers || isNaN(input)) {
+    return false;
   }
+  return true;
 }
 
 function checkWrapper() {
@@ -49,14 +66,7 @@ function checkWrapper() {
 }
 
 function generateOneFlipNumber() {
-  const digits = [...Array(10).keys()];
-  let hello = '';
-
-  digits.forEach(digit => {
-    hello += `<div class="digit">${digit}</div>`;
-  });
-
-  return hello;
+  return `<div class="digit">0</div>`;
 }
 
 function addFlipNumbersToBoard(digits) {
@@ -77,10 +87,16 @@ function removeFlipNumbersFromBoard(digits) {
 }
 
 function initalizeBoard() {
-  digitInput.value = initalFlipNumberSize;
-  setBoardSize(initalFlipNumberSize);
+  digitInput.value = config.initialFlipNumbers;
+  setBoardSize(config.initialFlipNumbers);
+}
+
+function copyNumber() {
+  const textToCopy = [...document.querySelectorAll('.board')].map(digit => digit.innerText).join('');
+  navigator.clipboard.writeText(textToCopy);
 }
 
 digitInput.addEventListener('input', () => setBoardSize(Number(event.target.value)));
 document.addEventListener('DOMContentLoaded', initalizeBoard);
-document.querySelector('.toggle').addEventListener('click', toggleRotation);
+document.querySelector('.toggle').addEventListener('change', toggleRotation);
+document.querySelector('.copy-button').addEventListener('click', copyNumber);
